@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Fibonacci</title>
+	<style>
+		.defaults {
+			color: gray;
+		}
+		.new {
+			color: red;
+		}
+		input[type="button"] {
+			width:100px;
+			border: 1px solid #ccc;
+			cursor:pointer;
+		}
+	</style>
+</head>
+<body>
+	<div>
+		<span>m阶楼梯(m<=10)，一次最多跨n阶(m>n)，问有多少种跨法!</span>
+		M:
+		<input type="text" id="m"/>
+		N:
+		<input type="text" id="n"/>
+		Go:
+		<input type="button" id="go" value="click"/>
+	</div>
+	<div id="Fibonacci" style="background-color:gray"> </div>
+	<script type="text/javascript" src="jquery-1.7.2.min.js"></script>
+	<script type="text/javascript">
+		var jump = 1;
+
+		$('#go').click(function() {
+			var m = $('#m').val()
+			  , n = $('#n').val()
+			  , t = []
+			  , bInfo;
+			  
+			bInfo = checkInput(m,n);
+			bInfo.bo?
+				(t = doFibonacci(m, n),
+				$.each(t, function(index, item) {
+					toDisplay(item);
+				}))
+				: alert(bInfo.msg)
+		});
+		/*$('#Fibonacci').bind({
+			'mouseenter' : function(e) {
+				$(this).css({
+					'background-color' : 'red'
+				})
+			},
+			'mouseleave' : function(e) {
+				$(this).css({
+					'background-color' : 'gray'
+				})
+			}
+		});*/
+		function errInfo(bo, msg){
+			this.bo = bo;
+			this.msg = msg;
+		}
+		function isNum(nums){
+			var reg = /^\d*$/
+			  , index = 0;
+			for(; index< nums.length; index++){
+				if(!reg.test(nums[index])){
+					return false;
+				}
+			}
+			return true;
+		}
+		function checkInput(){
+			var bInfo = new errInfo();
+			arguments[0]>10 ? (bInfo.bo = false, bInfo.msg = 'm值应小于等于10.') : (arguments.length >0 ? (isNum(arguments)? (bInfo.bo = true): (bInfo.bo = false, bInfo.msg = '输入值应为整数.')): (bInfo.bo = true))
+			return bInfo;
+		}
+		function toDisplay(v, p) {
+			var s = '', p = p || '';
+			if ( v instanceof Array) {
+				$.each(v, function(index, item) {
+					s = p + item.s;
+					if (item.v) {
+						s += ','
+						toDisplay(item.v, s);
+					} else {
+						$('#Fibonacci').append(jump + ':' + s + '<br>');
+						jump++;
+					}
+				})
+			} else {
+				s = p + v.s;
+				if (v.v) {
+					s += ','
+					toDisplay(v.v, s);
+				} else {
+					$('#Fibonacci').append(jump + ':' + s + '<br>');
+					jump++;
+				}
+			}
+		}
+
+		function doFibonacci(m, n) {
+			var c = [];
+			for (var i = 1; i <= n && i <= m; i++) {
+				var t = {};
+				t.s = i;
+				t.v = doFibonacci(m - i, n) || '';
+				c.push(t);
+			}
+			if (c.length > 0) {
+				return c;
+			}
+		}
+	</script>
+</body>
+</html>
