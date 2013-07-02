@@ -1,0 +1,590 @@
+/*
+ 
+ javascriptȨ��ָ��ѧϰ�ʼ�
+ @author:Teddy (2012.07.31- 2012.08.02)
+ 
+*/
+
+/* 1.n! */
+var factorial_ = function(n){
+    if(n<=1) return 1;
+    else return n*arguments.callee(n-1);
+};
+/* 2.get the max value form a group of numbers*/
+var getMax_ = function(){
+    var max_ = Number.NEGATIVE_INFINITY;
+    for(var i=0;i<arguments.length;i++){
+        max_ = arguments[i]>max_?arguments[i]:max_;
+    }
+    return max_;
+}
+/* 3.get the min value form a group of numbers*/
+var getMin_ = function(){
+    var min_ = Number.POSITIVE_INFINITY;
+    for(var i=0;i<arguments.length;i++){
+        min_ = arguments[i]<min_?arguments[i]:min_;
+    }
+    return min_;
+}
+/* 4.order an array asc*/
+var orderAsc_ = function(arr_){
+    return arr_.sort(function(a,b){return a-b});
+}
+/* 5.order an array desc*/
+var orderDesc_ = function(arr_){
+    return arr_.sort(function(a,b){return b-a});
+}
+/* 6.check the object is number or not*/
+var isNum_ = function(num){  
+    reg=/^\d+(.\d+)?$/;  
+    if(reg.exec(num)){  
+        return true;  
+    }else{  
+        return false;  
+    }  
+}
+var isNum__ = function(num){  
+    reg=/^\d+(.\d+)?$/;
+    var index_ = 0; 
+    if(num instanceof Number) return true;
+    else if(num instanceof String) return reg.exec(num);
+    else if(num instanceof Array){
+            
+    } 
+    if(reg.exec(num)){  
+        return true;  
+    }else{  
+        return false;  
+    }  
+}
+/* 7.replace all non-number characters into '' */
+var beNum_ = function(obj){  
+    reg=/^\d*$/;  
+    var num = obj.toString().replace(/\D/g,"");
+    if(num.length>0) return num;
+    else throw new Error('"'+obj+'" can not change into a number!');
+} 
+/* 8.return an array that holds the names of the enumerable properties of obj*/
+var getPropertyNames_ = function(/*object*/obj){
+    var arr_ = [];
+    for(name in obj) arr_.push(name+':'+obj.name+'<br>');
+    return arr_;
+}
+/* 9.copy the enumerable properties of the object form obj_f to object obj_t
+  if to is null, a new object is created. The function returns obj_t or the 
+  newly created object.*/
+var copyProperties_ = function(/*object*/obj_f,/*object*/obj_t){
+    if(!obj_t) obj_t = {};
+    for(name in obj_f) obj_t.name = obj_f.name;
+    return obj_t;
+}
+/* 10.copy the enumerable properties of the object from obj_f to the objec obj_t, but 
+  only the ones that are not already defined by obj_t.*/
+var copyUndefinedProperties_ = function(/*object*/obj_f,/*object*/obj_t){
+    for(name in obj_f){
+        if(!name in obj_t) obj_t.name = obj_f.name;
+    }
+}
+/* 11.pass each element of the array arr to the specified predicate function.
+  Return an array that hold the elements for whick the predicate returned true.*/
+var filterArray_ = function(/*array*/arr,/*boolean function*/func){
+    var results = [];
+    var lth = arr.length;    // In case the function func changes the length!
+    for(var i =0;i < lth;i++){
+        if(func(arr[i])) results.push(arr[i]);
+    }
+    return results;
+}
+/* 12.Return the array of values that result when each of the elements
+  of the array arr are passed to the function func*/
+var mapArray_ = function(/*array*/arr,/*functioin*/func){
+    var results = [];
+    var lth = arr.length;    // In case the function func changes the length!
+    for(var i =0;i < lth;i++) results[i] = func(arr[i]);
+    return results;
+}
+/* 13.Return the array of values that result when each of the elements
+  of the array arr are passed to the functions1 that worked on elements.
+  and order the list of the array by the functions2 that worked on array.*/
+var mapAndOrderArray_ = function(/*array*/arr,/*array of functioins1*/arrs1,
+    /*array of functions2*/arrs2){
+    var results = arr.concat();
+    results = mapArray_(results,arrs1);   // do map and filter on the array arr.
+    results = orderArray_(results,arrs2);  // do order on the array.
+    return results;
+}
+/* 14.Return the array of values that result when each of the elements
+  of the array arr are passed to the functions at arrs serail*/
+var mapArray_ = function(/*array*/arr,/*functions' array*/arrs){
+    var results = arr.concat();
+    var lth;
+    for(var i = 0;i < arrs.length;i++){
+        lth = results.length;    // In case the current function changes the length!
+        for(var j =0;j < lth;j++) results[j] = arrs[i](results[j]);
+    }
+    return results;
+}
+/* 15.Return the array that ordered by the functions of arrs*/
+var orderArray_ = function(/*array*/arr,/*functions' array*/arrs){
+    var results = arr.concat();
+    for(var i = 0;i < arrs.length;i++){ 
+        results = arrs[i](results);
+    }
+    return results;
+}
+/* 16.Parse ID card
+   Return a object contains isCard,age,sex*/
+var idCardParse = function(num){
+    var idCard = {isCard:true};   // the return object.
+    var no = num.toString();   // the id card number
+    var age;  //
+    var sex;  //
+    try{
+        if(no.length==18){//���֤λ��Ϊ18λ
+  	  for(var i=0;i<17;i++){//ǰʮ�߸�����������
+			if(isNaN(Number(no.charAt(i)))){
+				throw new Error('�Ƿ������֤����!ǰ17λӦ��������.');
+			}
+		  }
+		  if(isNaN(Number(no.charAt(17)))){//���һλ������x
+			if(no.charAt(17)!='X'&&no.charAt(17)!='x'){
+				throw new Error('�Ƿ������֤����!���Ϊֻ��ΪX����x�ķ������ַ�.');
+			}
+		  }
+		  if(Number(no.substr(10,2))>12||Number(no.substr(10,2))==0){//�·ݱ�����1-12֮��
+			throw new Error('�Ƿ������֤����!�·�Ӧ����1-12֮��.');
+		  }
+		  var year = Number(no.substr(6,4));
+		  if(year%400==0||(year%4==0&&year%100!=0)){//�ж��Ƿ�Ϊ����
+			if(Number(no.substr(10,2))==2){//����2����29��
+				if(Number(no.substr(12,2))>29||Number(no.substr(12,2))==0){
+					throw new Error('�Ƿ������֤����!');
+				}
+			}
+		  }else{//�����꣬����Ϊ28��
+			if(Number(no.substr(10,2))==2){
+				if(Number(no.substr(12,2))>28||Number(no.substr(12,2))==0){
+					throw new Error('�Ƿ������֤����!');
+				}
+			}
+		  }
+		  var month = Number(no.substr(10,2));//�жϴ����Ƿ���ȷ
+		  if(month==1||month==3||month==5||month==7||month==8||month==10||month==12){
+			if(Number(no.substr(12,2))>31||Number(no.substr(12,2))==0){
+				throw new Error('�Ƿ������֤����!');
+			}
+		  }//�ж�С���Ƿ���ȷ
+		  if(month==4||month==6||month==9||month==11){
+			if(Number(no.substr(12,2))>30||Number(no.substr(12,2))==0){
+				throw new Error('�Ƿ������֤����!');
+			}
+		  }
+		  //�ж��Ա�
+		  sex = Number(no.substr(16,1))%2;
+		  //�жϳ���������
+		  var birthday = no.substr(6,4)+"-"+no.substr(10,2)+"-"+no.substr(12,2);
+		  //�ж�����
+		  var date = new Date();
+		  date.setYear(Number(no.substr(6,4)));
+		  date.setMonth(Number(no.substr(10,2))-1);	
+		  date.setDate(Number(no.substr(12,2)));	
+		  var now = new Date();
+		  age = Number(now.getFullYear())-Number(date.getFullYear());
+
+		  now.setYear(date.getFullYear());
+		  if(now.getTime()-date.getTime()<0){
+			age = age -1;
+		  }
+	   }else if(no.length==15){//���֤λ��Ϊ15λ
+		  for(var i=0;i<15;i++){//ǰʮ�������������
+			if(isNaN(Number(no.charAt(i)))){
+                throw new Error('�Ƿ������֤����!');
+			}
+		  }
+		  if(Number(no.substr(8,2))>12||Number(no.substr(8,2))==0){//�·ݱ�����1-12֮��
+			throw new Error('�Ƿ������֤����!');
+		  }
+		  var year = Number('19'+no.substr(6,2));
+		  if(year%400==0||(year%4==0&&year%100!=0)){//�ж��Ƿ�Ϊ����
+			if(Number(no.substr(8,2))==2){//����2����29��
+				if(Number(no.substr(10,2))>29||Number(no.substr(10,2))==0){
+					throw new Error('�Ƿ������֤����!');
+				}
+			}
+		  }else{//�����꣬����Ϊ28��
+			if(Number(no.substr(8,2))==2){
+				if(Number(no.substr(10,2))>28||Number(no.substr(10,2))==0){
+					throw new Error('�Ƿ������֤����!');
+				}
+			}
+		  }
+		  var month = Number(no.substr(8,2));//�жϴ����Ƿ���ȷ
+		  if(month==1||month==3||month==5||month==7||month==8||month==10||month==12){
+			if(Number(no.substr(10,2))>31||Number(no.substr(10,2))==0){
+				throw new Error('�Ƿ������֤����!');
+			}
+		  }//�ж�С���Ƿ���ȷ
+		  if(month==4||month==6||month==9||month==11){
+			if(Number(no.substr(10,2))>30||Number(no.substr(10,2))==0){
+				throw new Error('�Ƿ������֤����!');
+			}
+		  }
+		  //�ж��Ա�
+		  sex = Number(no.substr(14,1))%2;
+		  //�жϳ���������
+		  var birthday = '19'+no.substr(6,2)+"-"+no.substr(8,2)+"-"+no.substr(10,2);
+		  //�ж�����
+		  var date = new Date();
+		  date.setYear(Number('19'+no.substr(6,2)));
+		  date.setMonth(Number(no.substr(8,2))-1);	
+		  date.setDate(Number(no.substr(10,2)));	
+		  var now = new Date();
+		  age = Number(now.getFullYear())-Number(date.getFullYear());
+
+		  now.setYear(date.getFullYear());
+		  if(now.getTime()-date.getTime()<0){
+			age = age -1;
+		  }
+	   }else{
+		  throw new Error('��������֤����λ���!');
+	   }
+    }catch(e){
+        idCard.isCard = false;
+        idCard.msg = e.message;
+    }finally{
+        if(idCard.isCard){
+            idCard.age = age;
+            idCard.sex = sex?'��':'Ů';
+        }
+        return idCard;
+    }
+}
+/* 17.This function implements a breakpoint. It repeatedly prompts the user
+   for an expression,evaluates it with the supplied self-inspecting closure,
+   and displays the result. It is the closure that provides access to the
+   scope to be inspected, so each function must supply its own closure.
+   Inspired bt Steve Yen's breakpoint() function at 
+   http://trimpath.com/project/wiki/TrimBreakpoint*/
+var inspect_ = function(inspector, title){
+    var expression,result;
+    /* You can use a breakpoint to turn off subsequent breakpoints by creating 
+        a preoperty named 'ignore' on this function.*/
+    if('ignore' in arguments.callee) return;
+    
+    while(true){
+        /*Figure out how to prompt the user*/
+        var message = '';
+        /*if we were given a title, display that first*/
+        if(title) message = title+'\n';
+        /*if we have already evaluated an expression, display it and its value*/
+        if(expression) message +='\n'+expression+'==>'+result+'\n';
+        else expression ='';
+        /* we always display at least a basic prompt*/
+        message += 'Enter an expression to evaluate:';
+        
+        /*Get the user's input, displaying our prompt and using the last
+        expression as the default value this time.*/
+        expression = prompt(message,expression);
+        
+        /*If the user did not enter anything( or clicked cancel ), they are done, and
+        so we return ,ending the breakpoint.*/
+        if(!expression) return;
+        
+        /*Otherwise, use the supplied closure ti evaluate the expression in the 
+        scope that is being inspected. The result will be displayed on the next
+        iteration.*/
+        result = inspector(expression);
+    }
+}
+var factorial_n = function(n){
+    var inspector = function($){ return eval($);}
+    inspect_(inspector, 'Entering factorial{}');
+    var result = 1;
+    while(n>1){
+        result = result*n;
+        n--;
+        inspect_(inspector,'factorial() loop');
+    }
+    inspect_(inspector,'Exiting factorial{}');
+    return result;
+}
+
+/*
+var breakPoints_ = {
+    result:'',
+    getValues:function(){
+        var sex_ = new letTest;
+        for(name in this){
+            if(!this.hasOwnProperty(name))
+                this.result += (name+':'+this.name+'\n');
+        }
+        return this.result;
+    }
+}
+var breakPoint_ = function(obj){
+    var result = '';
+    var sex = sexs;
+    if(!obj) return;
+    for(name in obj){
+        if(!this.hasOwnProperty(name)){
+            result += (name+':'+obj.name+'\n');
+        }
+    }
+    alert(result);
+}
+var ttt = function(){
+        var msg = '';
+        for(pro in this){
+            if(!this.hasOwnProperty(pro))
+                msg += pro+':'+value+'\n';
+        }
+        alert(msg);
+    };
+var letTest = function(){
+    var name = 'Teddy';
+    var sexs = 'boy';
+    var age = '24';
+    var msg = '';
+    //msg = 'name:'+name+'\n sexs:'+sexs+'\n age:'+age+'\n';
+    //alert(msg);
+    ttt();
+    //alert(new breakPoints_.getValues);
+    sex = 'girl';
+    //breakPoint_();
+}
+*/
+/* 18.Borrow methods from one class for use by another.
+    The arguments should be the constructor functions for the classes.
+    Methods of built-in types such as Object, Array ,Date ,and RegExp are 
+    not enumerable and can not be borrowed with this method.*/
+var borrowMethods_ = function(borrowFrom, addTo){
+    /*prototype object to borrow from*/
+    var from = borrowFrom.prototype;
+    /*prototype object to extend*/
+    var to = addTo.prototype;
+    /* Loop through all properties of the prototype*/
+    for(m in from){
+        /* ignore nonfuncions*/
+        if(typeof from[m] != 'function') continue;
+        /* borrow the method*/
+        to[m] = from[m];
+    }
+}
+/* 19.break points*/
+var breakPoints_ = function(){
+    var param_ ="", result_ ="";
+    do{
+        param_ =prompt("Usage:Return the value of the input.'' will be exit\nExpression:"+param_+"\n"+result_+"\n",param_);
+        try{
+            result_ = "Result:"+eval(param_);
+        }catch(ex){
+            result_ = ex;
+        }
+    }while(param_)
+}
+/* 20.This function parses ampersand-separated name=value artument pairs from
+    the query string of the URL. It stores the name=value pairs in properties 
+    of an object and returns that object.Use it like this:
+    
+    var args = getArgs_();  //Parse args from URL
+    var q = args.q||'';     //Use argument, if defined, or a default value
+    var n = args.n?parseInt(args.n):10;
+*/
+var getArgs_ = function(){
+    var args = new Object();
+    var query = location.search.substring(1);
+    var pairs = query.split('&');
+    for(var i =0; i<pairs.length; i++){
+        var pos = pairs[i].indexOf('=');
+        if(pos == -1) continue;
+        var argname = pairs[i].substring(0,pos);
+        var value = pairs[i].substring(pos+1);
+        args[argname] = value;
+    }
+    return args;
+}
+/* 21.This module defines functions for querying window and document geometry.
+    getWindowX/Y(): return the position of the window on the screen
+    getViewportWidth/Height(): return the size of the browser viewport area
+    getDocumentWidth/Height(): return the size of the document
+    getHorizontalScroll(): return the position of the horizontal scrollbar
+    getVerticalScroll(): return the position of the vertical scrollbar
+    
+    Note that there is no portable way to query the overall size of the browser
+    window, so there are no getWindwoWidth/Height() functions.
+    
+    IMPORTANT: This module must be included in the <body> of a document instead 
+    of the <head> of the document.
+*/
+var getGeometry_ = function(){
+    var Geometry = {};
+    if(window.screenLeft){//IE and others
+        Geometry.getWindowX = function(){return window.screenLeft;};
+        Geometry.getWindowY = function(){return window.screenTop;};
+    }else if(window.screenX){//Firefox,chrome and others
+        Geomotry.getWindowX = function(){return window.screenX;};
+        Geometry.getWindowY = function(){return window.screenY;};
+    }
+    if(window.innerWidth){//All browsers but IE
+        Geometry.getViewportWidth = function(){return window.innerWidth;};
+        Geometry.getViewportHeight = function(){return window.innerHeight;};
+        Geometry.getHorizontalScroll = function(){return window.pageXOffset;};
+        Geometry.getVerticalScroll = function(){return window.pageYOffset;};
+    }else if(document.documentElement&&document.documentElement.clientWidth){
+    //These functions are for IT6 when there is a DOCTYPE
+        Geometry.getViewportWidth = function(){return document.documentElement.clientWidth;};
+        Geometry.getViewportHeight = function(){return document.documentElement.clientHeight;};
+        Geometry.getHorizontalScroll = function(){return document.documentElement.scrollLeft;};
+        Geometry.getVerticalScroll = function(){return document.documentElement.scrollTop;};
+    }else if(document.body.clientWidth){
+    //These are for IE4,IE5,IE6 without a DOCTYPE
+        Geometry.getViewportWidth = function(){return document.body.clientWidth;};
+        Geometry.getViewportHeight = function(){return document.body.clientHeight;};
+        Geometry.getHorizontalScroll = function(){return document.body.scrollLeft;};
+        Geometry.getVerticalScroll = function(){return document.body.scrollTop;};
+    }
+    /*These functions return the size of the document. They are not window related,
+      but they are useful to have here anyway.*/
+    if(document.documentElement&&document.documentElement.scrollWidth){
+    //These functions are for IT6 when there is a DOCTYPE
+        Geometry.getDocumentWidth = function(){return document.documentElement.scrollWidth;};
+        Geometry.getDocumentHeight = function(){return document.documentElement.scrollHeight;};   
+    }else if(document.body.scrollWidth){
+    //These are for IE4,IE5,IE6 without a DOCTYPE
+        Geometry.getDocumentWidth = function(){return document.body.scrollWidth;};
+        Geometry.getDocumentHeight = function(){return document.body.scrollHeight;};
+    }
+    return Geometry;
+}
+/* 22.Return the browser's name*/
+var getBrowser_ = function(){
+    var browser_ = '';
+    if(navigator.userAgent.indexOf("MSIE")>0){
+        browser_ = 'IE';
+    }else if(navigator.userAgent.indexOf("Firefox")>0){
+        browser_ = 'Firefox';
+    }else if(navigator.userAgent.indexOf("Chrome")>0){
+        browser_ = 'Chrome';
+    }else if(navigator.userAgent.indexOf("Safari")>0){
+        browser_ = 'Safari';
+    } 
+    //for(var name in navigator){
+   //     document.write(name+':'+navigator[name]+'<br>');
+   // } 
+    return browser_;
+}
+/* 23. This function loops through all the hyperlinks in a document and assigns
+    the confirmLink, function to each one as an event handler. Don't call it 
+    before the document is parsed and the links are all defined. It is best 
+    to call it from the onload event handler of a <body> tag*/
+var confirmAllLinks_ = function(){
+    for(var i =0; i<document.links.length;i++){
+        var kl = document.links[i];
+        document.links[i].onclick = testEx_();
+    }
+}
+/* 24. Whether the browser support Level 1 DOM interface: true= yes  false= no*/
+var checkDOM1Support_ = function(){
+    return document.implementation&&document.implementation.hasFeature
+        &&document.implementation.hasFeature('html','1.0');
+}
+/*25. Find all Test nodes at or beneath the node n. Concatenate their content
+    and return it as a string.*/
+var getText_ = function(n){
+    if(typeof n.nodeType =='undefined'){
+        n = n.context;
+    }
+    var strings = [];
+    var index = 0;
+    getStrings(n,strings);
+    return strings.join("");
+    function getStrings(n,strings){
+        if(n.nodeType ==3){
+            index++;
+            strings.push(index+":"+n.data+"<br>");
+        } 
+        else if(n.nodeType ==1){
+            for(var m = n.firstChild; m != null; m = m.nextSibling){
+                getStrings(m,strings);
+            }
+        }
+    }
+}
+/*26. getElements(classname, tagname, root)
+    Return an array if DOM elements that are members of the specified class,
+    have the specified tagname, and are descendants of the specified root.
+    
+    If no classname is specified, elements are returned regardless of class.
+    If no tagname is specified, elements are returned regardless of tagname.
+    If no root is specified, the document object is used.
+    If the specified root is a string, it is an element id, and the root element
+    is looked up using getElementsById()
+    */
+var getElements_ = function(classname, tagname, root){
+
+    // if no root was specified, use the entire document
+    //if a string was specified, look it up
+    if(!root) root = document;
+    else if(typeof root =='string') root = document.getElementById(root);
+    else if(typeof root.nodeType = 'undefined') root = root.context;
+    //if no tagname was specified, use all tags
+    if(!tagname) tagname = '*';
+    //if no classname was specified, we return all tags
+    if(!classname) return all;
+    //otherwise, we filter the element by classname
+    var elements = [];
+    for(var i = 0; i<all.length; i++){
+        var element = all[i];
+        if(isMember(element,classname))
+            elements.push(element);
+    }
+    return elements;
+    function isMember(element,classname){
+        var classes = element.className;
+        if(!classes) return false;
+        if(classes == classname) return true;
+        // we didn't match exactly, so if there is no whitespace, then 
+        // this element is not a member of the class
+        var whitespace = /\s+/;    //the regex of white space.
+        if(!whitespace.test(classes)) return false;
+        var c = classes.split(whitespace);
+        for(var i = 0; i < c.length; i++){
+            if(c[i]==classname) return true;
+        }
+        return false;
+    }
+}
+/*27. This function recursively looks at Node n and its descendants
+    converting all Text nnode to uppercase*/
+var upcase_ = function(n){
+    if(n.nodeType ==3){   //Node.TEXT_NODE
+    //if the node is a Text node, change ite text to uppercase.
+        n.data = n.data.toUpperCase();
+    }else{
+    /*if the node is not a Text node, loop through its children and 
+    recursively call this function on each child.*/
+        var kids = n.childNodes;
+        for(var i = 0; i< kids.length; i++) upcase(kids[i]);
+    }
+}
+/*28. This function takes a Node n, replaces it in the tree with an Element node
+    that represents an HTML <b> tag, and then makes the original node the child
+    of the new <b> element.*/
+var embolden_ = function(n){
+    if(typeof n =='string') n = document.getElementById(n);
+    var b = document.createElement('b');
+    var parent = n.parentNode;
+    parent.replaceChild(b,n);
+    b.appendChild(n); 
+}
+/*29. */
+var exchangeElement_ = function(m,n){
+    if(typeof m =='string') m = document.getElementById(m);
+    if(typeof n =='string') n = document.getElementById(n);
+    var temp = m;
+    var nparent = n.parentNode;
+    var mparent = m.parentNode;
+    mparent.replaceChild(n,m);
+    temp = n;
+    nparent.replaceChild(temp,n);
+}
